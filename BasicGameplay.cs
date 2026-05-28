@@ -6,10 +6,12 @@ public class BasicGameplay : MonoBehaviour
     private Vector2 movement;
     private Animator anim;
     public bool sampah = false;
-    public GameObject button;
+    public GameObject E;
+    public GameObject miniGame;
     public GameObject kamera;
     float batasXkiri = 5.0f;
     float batasXkanan = 4.5f;
+    bool mulai = false;
 
     void Start()
     {
@@ -19,15 +21,19 @@ public class BasicGameplay : MonoBehaviour
 
     void Update()
     {
+        if (mulai == true){
         float hInput = Input.GetAxisRaw("Horizontal");
         float vInput = Input.GetAxisRaw("Vertical");
         movement = new Vector2(hInput, vInput).normalized;
         anim.SetFloat("velocityX", hInput);
         anim.SetFloat("velocityY", vInput);
-        // if (transform.position.x < -30)
-        // {
-        //     kamera.transform.position = new Vector3(-1f, kamera.transform.position.y, kamera.transform.position.z);
-        // } 
+        }
+
+        if (sampah && Input.GetKeyDown(KeyCode.E))
+            {
+                miniGame.SetActive(true);
+                E.SetActive(false);
+            }
     }
 
     void FixedUpdate()
@@ -40,7 +46,7 @@ public class BasicGameplay : MonoBehaviour
         if (collision.CompareTag("Sampah"))
         {
             sampah = true;
-            button.SetActive(true);
+            E.SetActive(true);
         }
     }
 
@@ -49,7 +55,12 @@ public class BasicGameplay : MonoBehaviour
         if (collision.CompareTag("Sampah"))
         {
             sampah = false;
-            button.SetActive(false);
+            E.SetActive(false);
         }
+    }
+
+    public void StartGame()
+    {
+        mulai = true;
     }
 }
