@@ -14,6 +14,7 @@ public class MiniGame : MonoBehaviour
     public Slider proggres;
     public GameObject kanvas;
     public GameObject spasi;
+    public GameObject buka;
 
     public float kecepatan = 200f;
     private bool naik = true;
@@ -21,6 +22,7 @@ public class MiniGame : MonoBehaviour
 
     void Start()
     {
+
         spasiArea = spasi.GetComponent<RectTransform>();
         rectTransform = GetComponent<RectTransform>();
         hit = GameObject.Find("hit");
@@ -52,6 +54,8 @@ public class MiniGame : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             spasi.transform.localScale = new Vector3(0.73f, 0.354369f, 0.354369f);
+            float acak = Random.Range(-5.5f,5.5f);
+            buka.transform.rotation = Quaternion.Euler(0,0,acak);
 
             if (masuk == true)
             {
@@ -72,6 +76,7 @@ public class MiniGame : MonoBehaviour
         {
             Vector3 awal = new Vector3(1f,0.4854369f,0.4854369f);
             spasi.transform.localScale = awal;
+            buka.transform.rotation = Quaternion.Euler(0,0,0);
         }
     }
 

@@ -12,11 +12,14 @@ public class BasicGameplay : MonoBehaviour
     float batasXkiri = 5.0f;
     float batasXkanan = 4.5f;
     bool mulai = false;
+    public bool mentok = false;
+    
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        Vector3 kameraPosisi = new Vector3(-0.17f,kamera.transform.position.y,kamera.transform.position.z);
     }
 
     void Update()
@@ -33,6 +36,35 @@ public class BasicGameplay : MonoBehaviour
             {
                 miniGame.SetActive(true);
                 E.SetActive(false);
+            }
+
+        if (mentok == false)
+            {
+                Vector3 kameraPosisi = new Vector3(-0.17f,kamera.transform.position.y,kamera.transform.position.z);
+                kamera.transform.position = kameraPosisi;
+            }
+        else if (transform.position.x <= -31.5f && mentok == true)
+            {
+                Vector3 kameraMentok = new Vector3(-31.42f,kamera.transform.position.y,kamera.transform.position.z);
+                kamera.transform.position = kameraMentok;
+            }
+        else if (transform.position.x >= 31.5f && mentok == true)
+            {
+                Vector3 kameraMentok = new Vector3(31.35f,kamera.transform.position.y,kamera.transform.position.z);
+                kamera.transform.position = kameraMentok;
+            }
+        else
+        {
+            kamera.transform.position = new Vector3(-0.17f,kamera.transform.position.y,kamera.transform.position.z);
+        }
+
+        if (transform.position.x <= -31.5f || transform.position.x >= 31.5f)
+            {
+                mentok = true;
+            }
+        else
+            {
+                mentok = false;
             }
     }
 
