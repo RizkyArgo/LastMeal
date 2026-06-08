@@ -1,7 +1,7 @@
 using UnityEngine;
 public class BasicGameplay : MonoBehaviour
 {
-    public float speed = 5f;
+    public float speed;
     private Rigidbody2D rb;
     private Vector2 movement;
     private Animator anim;
@@ -12,7 +12,7 @@ public class BasicGameplay : MonoBehaviour
     float batasXkiri = 5.0f;
     float batasXkanan = 4.5f;
     bool mulai = false;
-    public bool mentok = false;
+    bool mentok = false;
     
 
     void Start()
@@ -66,6 +66,18 @@ public class BasicGameplay : MonoBehaviour
             {
                 mentok = false;
             }
+
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            float lari = speed *=2;
+            speed = lari;
+        }
+        
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            speed = 15f;
+        }
     }
 
     void FixedUpdate()
