@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 public class BasicGameplay : MonoBehaviour
 {
     public float speed;
@@ -9,6 +10,9 @@ public class BasicGameplay : MonoBehaviour
     public GameObject E;
     public GameObject miniGame;
     public GameObject kamera;
+    public GameObject pause;
+    public GameObject menuPause;
+    bool berhenti = false;
     float batasXkiri = 5.0f;
     float batasXkanan = 4.5f;
     bool mulai = false;
@@ -30,6 +34,7 @@ public class BasicGameplay : MonoBehaviour
         movement = new Vector2(hInput, vInput).normalized;
         anim.SetFloat("velocityX", hInput);
         anim.SetFloat("velocityY", vInput);
+        pause.SetActive(true);
         }
 
         if (sampah && Input.GetKeyDown(KeyCode.E))
@@ -78,6 +83,19 @@ public class BasicGameplay : MonoBehaviour
         {
             speed = 15f;
         }
+
+         if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            
+            berhenti = true;
+            if (berhenti == true)
+            {
+                menuPause.SetActive(true);
+                mulai = false;
+                speed =0;
+
+            }
+        }
     }
 
     void FixedUpdate()
@@ -106,5 +124,27 @@ public class BasicGameplay : MonoBehaviour
     public void StartGame()
     {
         mulai = true;
+    }
+
+    public void Pause()
+    {
+        berhenti = true;
+        mulai = false;
+        speed = 0;
+        menuPause.SetActive(true);
+    }
+
+    public void Resume()
+    {
+        mulai = true;
+        speed = 15;
+        menuPause.SetActive(false);
+        berhenti = false;
+    }
+
+    public void Exit()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(sceneName);
     }
 }
