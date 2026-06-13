@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 public class BasicGameplay : MonoBehaviour
 {
     public float speed;
+    float walkSpeed = 15f;
     private Rigidbody2D rb;
     private Vector2 movement;
     private Animator anim;
@@ -12,6 +14,8 @@ public class BasicGameplay : MonoBehaviour
     public GameObject kamera;
     public GameObject pause;
     public GameObject menuPause;
+    public GameObject atribut;
+    public Slider darah;
     bool berhenti = false;
     float batasXkiri = 5.0f;
     float batasXkanan = 4.5f;
@@ -24,6 +28,8 @@ public class BasicGameplay : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         Vector3 kameraPosisi = new Vector3(-0.17f,kamera.transform.position.y,kamera.transform.position.z);
+        int range = Random.Range(30,100);
+        darah.value = range;
     }
 
     void Update()
@@ -35,6 +41,17 @@ public class BasicGameplay : MonoBehaviour
         anim.SetFloat("velocityX", hInput);
         anim.SetFloat("velocityY", vInput);
         pause.SetActive(true);
+        atribut.SetActive(true);
+
+        if (Input.GetKey(KeyCode.LeftShift) && darah.value >0)
+        {
+            speed = walkSpeed * 2f;
+            darah.value -= 4f * Time.deltaTime;
+            }
+            else
+            {
+                speed = walkSpeed;
+            }
         }
 
         if (sampah && Input.GetKeyDown(KeyCode.E))
@@ -73,11 +90,7 @@ public class BasicGameplay : MonoBehaviour
             }
 
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            float lari = speed *=2;
-            speed = lari;
-        }
+        
         
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
