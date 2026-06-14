@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.TextCore;
 using UnityEngine.UI;
 public class BasicGameplay : MonoBehaviour
 {
@@ -12,15 +13,21 @@ public class BasicGameplay : MonoBehaviour
     public GameObject E;
     public GameObject miniGame;
     public GameObject kamera;
-    public GameObject pause;
     public GameObject menuPause;
     public GameObject atribut;
+    public GameObject barHp;
     public Slider darah;
+    public GameObject vignette;
+    public GameObject screenGameOver;
     bool berhenti = false;
     float batasXkiri = 5.0f;
     float batasXkanan = 4.5f;
     bool mulai = false;
     bool mentok = false;
+    bool kelaparan = false;
+    bool ketangkep = false;
+    bool gameOver = false;
+    bool boost = false;
     
 
     void Start()
@@ -28,7 +35,7 @@ public class BasicGameplay : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         Vector3 kameraPosisi = new Vector3(-0.17f,kamera.transform.position.y,kamera.transform.position.z);
-        int range = Random.Range(30,100);
+        int range = Random.Range(40,70);
         darah.value = range;
     }
 
@@ -40,13 +47,14 @@ public class BasicGameplay : MonoBehaviour
         movement = new Vector2(hInput, vInput).normalized;
         anim.SetFloat("velocityX", hInput);
         anim.SetFloat("velocityY", vInput);
-        pause.SetActive(true);
         atribut.SetActive(true);
+        darah.value -= 2f * Time.deltaTime;
 
-        if (Input.GetKey(KeyCode.LeftShift) && darah.value >0)
+        if (Input.GetKey(KeyCode.LeftShift) && darah.value >20)
         {
+            boost = true;
             speed = walkSpeed * 2f;
-            darah.value -= 4f * Time.deltaTime;
+            darah.value -= 10f * Time.deltaTime;
             }
             else
             {
@@ -55,49 +63,45 @@ public class BasicGameplay : MonoBehaviour
         }
 
         if (sampah && Input.GetKeyDown(KeyCode.E))
-            {
-                miniGame.SetActive(true);
-                E.SetActive(false);
-            }
+        {
+            miniGame.SetActive(true);
+            E.SetActive(false);
+        }
 
         if (mentok == false)
-            {
-                Vector3 kameraPosisi = new Vector3(-0.17f,kamera.transform.position.y,kamera.transform.position.z);
-                kamera.transform.position = kameraPosisi;
-            }
+        {
+            Vector3 kameraPosisi = new Vector3(-0.17f,kamera.transform.position.y,kamera.transform.position.z);
+            kamera.transform.position = kameraPosisi;
+        }
         else if (transform.position.x <= -31.5f && mentok == true)
-            {
-                Vector3 kameraMentok = new Vector3(-31.42f,kamera.transform.position.y,kamera.transform.position.z);
-                kamera.transform.position = kameraMentok;
-            }
+        {
+            Vector3 kameraMentok = new Vector3(-31.42f,kamera.transform.position.y,kamera.transform.position.z);
+            kamera.transform.position = kameraMentok;
+        }
         else if (transform.position.x >= 31.5f && mentok == true)
-            {
-                Vector3 kameraMentok = new Vector3(31.35f,kamera.transform.position.y,kamera.transform.position.z);
-                kamera.transform.position = kameraMentok;
-            }
+        {
+            Vector3 kameraMentok = new Vector3(31.35f,kamera.transform.position.y,kamera.transform.position.z);
+            kamera.transform.position = kameraMentok;
+        }
         else
         {
             kamera.transform.position = new Vector3(-0.17f,kamera.transform.position.y,kamera.transform.position.z);
         }
-
         if (transform.position.x <= -31.5f || transform.position.x >= 31.5f)
-            {
-                mentok = true;
-            }
+        {
+            mentok = true;
+        }
         else
-            {
-                mentok = false;
-            }
-
-
-        
+        {
+            mentok = false;
+        }
         
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             speed = 15f;
         }
 
-         if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             
             berhenti = true;
@@ -106,7 +110,32 @@ public class BasicGameplay : MonoBehaviour
                 menuPause.SetActive(true);
                 mulai = false;
                 speed =0;
+            }
+        }
 
+        if (darah.value <= 20)
+        {
+            vignette.SetActive(true);
+            speed = 7f;
+            boost = false;
+        }
+
+        if (darah.value == 0)
+        {
+            kelaparan = true;
+            speed = 0;
+            mulai = false;
+            barHp.SetActive(false);
+            screenGameOver.SetActive(true);
+            gameOver = true;
+        }
+
+        if (gameOver == true)
+        {
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+            string sceneName = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(sceneName);
             }
         }
     }
