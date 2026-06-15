@@ -108,6 +108,7 @@ public class BasicGameplay : MonoBehaviour
             if (berhenti == true)
             {
                 menuPause.SetActive(true);
+                barHp.SetActive(false);
                 mulai = false;
                 speed =0;
             }
@@ -181,6 +182,7 @@ public class BasicGameplay : MonoBehaviour
         mulai = true;
         speed = 15;
         menuPause.SetActive(false);
+        barHp.SetActive(true);
         berhenti = false;
     }
 
