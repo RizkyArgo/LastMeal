@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.TextCore;
+using System.Collections;
 using UnityEngine.UI;
 public class BasicGameplay : MonoBehaviour
 {
-    public float speed;
+    public float speed = 15f;
     float walkSpeed = 15f;
     private Rigidbody2D rb;
     private Vector2 movement;
@@ -16,18 +16,27 @@ public class BasicGameplay : MonoBehaviour
     public GameObject menuPause;
     public GameObject atribut;
     public GameObject barHp;
+    public GameObject menang;
+    public GameObject proggres;
     public Slider darah;
+    public Slider objektif;
     public GameObject vignette;
+    public GameObject petunjuk;
     public GameObject screenGameOver;
+    public GameObject terimaKasih;
+    public GameObject dialog;
     bool berhenti = false;
     float batasXkiri = 5.0f;
     float batasXkanan = 4.5f;
-    bool mulai = false;
+    public bool mulai = false;
     bool mentok = false;
     bool kelaparan = false;
     bool ketangkep = false;
     bool gameOver = false;
     bool boost = false;
+    public bool finish = false;
+    bool petunjukSudahMuncul = false;
+    bool selesai = false;
     
 
     void Start()
@@ -41,6 +50,26 @@ public class BasicGameplay : MonoBehaviour
 
     void Update()
     {
+
+        if (finish == true)
+        {
+            menang.SetActive(true);
+            barHp.SetActive(false);
+            proggres.SetActive(false);
+            if (Input.GetMouseButtonDown(0))
+            {
+                selesai = true;
+            }
+        }
+        if (selesai == true)
+        {
+            terimaKasih.SetActive(true);
+                if (Input.GetMouseButtonDown(0))
+                {
+                    SceneManager.LoadScene(1);
+                }
+        }
+        
         if (mulai == true){
         float hInput = Input.GetAxisRaw("Horizontal");
         float vInput = Input.GetAxisRaw("Vertical");
@@ -48,7 +77,7 @@ public class BasicGameplay : MonoBehaviour
         anim.SetFloat("velocityX", hInput);
         anim.SetFloat("velocityY", vInput);
         atribut.SetActive(true);
-        darah.value -= 2f * Time.deltaTime;
+        darah.value -= 1f * Time.deltaTime;
 
         if (Input.GetKey(KeyCode.LeftShift) && darah.value >20)
         {
@@ -66,6 +95,7 @@ public class BasicGameplay : MonoBehaviour
         {
             miniGame.SetActive(true);
             E.SetActive(false);
+            mulai = false;
         }
 
         if (mentok == false)
@@ -127,17 +157,25 @@ public class BasicGameplay : MonoBehaviour
             speed = 0;
             mulai = false;
             barHp.SetActive(false);
+            proggres.gameObject.SetActive(false);
             screenGameOver.SetActive(true);
             gameOver = true;
+            dialog.SetActive(false);
         }
 
         if (gameOver == true)
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            if (Input.GetMouseButtonDown(0))
             {
-            string sceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(sceneName);
+            // string sceneName = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(1);
             }
+        }
+
+        if (objektif.value >= 3 && !petunjukSudahMuncul)
+        {
+            petunjukSudahMuncul = true;
+         StartCoroutine(TampilkanPetunjuk());
         }
     }
 
@@ -153,14 +191,29 @@ public class BasicGameplay : MonoBehaviour
             sampah = true;
             E.SetActive(true);
         }
-    }
 
+        if (collision.CompareTag("Enemy"))
+        {
+            mulai = false;
+            speed = 0;
+        }
+
+         if (collision.gameObject.CompareTag("Finish") && objektif.value == 3)
+        {
+            finish = true;
+        }
+    }
     void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Sampah"))
         {
             sampah = false;
             E.SetActive(false);
+        }
+
+        if (collision.CompareTag("Finish"))
+        {
+            finish = false;
         }
     }
 
@@ -190,5 +243,18 @@ public class BasicGameplay : MonoBehaviour
     {
         string sceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(sceneName);
+    }
+
+    public void Dialog()
+    {
+        mulai = false;
+        atribut.SetActive(false);
+    }
+
+    IEnumerator TampilkanPetunjuk()
+    {
+    petunjuk.SetActive(true);
+    yield return new WaitForSeconds(2f);
+    petunjuk.SetActive(false);
     }
 }

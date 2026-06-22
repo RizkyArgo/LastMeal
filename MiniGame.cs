@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.TextCore;
 
 public class MiniGame : MonoBehaviour
 {
@@ -13,16 +14,22 @@ public class MiniGame : MonoBehaviour
     public GameObject hit;
     public Slider proggres;
     public GameObject kanvas;
+    public GameObject tamat;
     public GameObject spasi;
     public GameObject buka;
+    public GameObject menang;
+    public bool selesai;
+    public GameObject hp;
+    public Slider objektif;
 
     public float kecepatan = 200f;
     private bool naik = true;
     bool masuk = false;
+    public BasicGameplay basicGameplay;
+    public AudioManager audioManager;
 
     void Start()
     {
-
         spasiArea = spasi.GetComponent<RectTransform>();
         rectTransform = GetComponent<RectTransform>();
         hit = GameObject.Find("hit");
@@ -53,6 +60,7 @@ public class MiniGame : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            
             spasi.transform.localScale = new Vector3(0.73f, 0.354369f, 0.354369f);
             float acak = Random.Range(-5.5f,5.5f);
             buka.transform.rotation = Quaternion.Euler(0,0,acak);
@@ -61,14 +69,22 @@ public class MiniGame : MonoBehaviour
             {
                 proggres.value += 1;
                 pindahTarget();
-
+                audioManager.playSFX(audioManager.sampah);
                 if (proggres.value >= proggres.maxValue)
                 {
                     kanvas.SetActive(false);
                     rng.Hadiah();
                     proggres.value = 0;
                     tutup.SetActive(true);
+                    objektif.value += 1;
+                    basicGameplay.StartGame();
                 }
+            }
+
+            if (objektif.value >= 3)
+            {
+                menang.SetActive(true);
+                selesai = true;
             }
         }
 
